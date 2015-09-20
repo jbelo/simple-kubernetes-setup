@@ -1,0 +1,29 @@
+{
+  "kind": "Pod",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "kube-scheduler"
+  },
+  "spec": {
+    "hostNetwork": true,
+    "containers": [
+      {
+        "name": "kube-scheduler",
+        "image": "gcr.io/google_containers/kube-scheduler:0c98c849a6b7825c60e4027e5975b672",
+        "command": [
+          "/bin/sh",
+          "-c",
+          "/usr/local/bin/kube-scheduler --master=127.0.0.1:8080 --v=2"
+        ],
+        "livenessProbe": {
+          "httpGet": {
+            "path": "/healthz",
+            "port": 10251
+          },
+          "initialDelaySeconds": 15,
+          "timeoutSeconds": 15
+        }
+      }
+    ]
+  }
+}

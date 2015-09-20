@@ -1,0 +1,20 @@
+- name: Add Docker repository and update apt cache
+  apt_repository:
+    repo: deb http://http.debian.net/debian jessie-backports main
+    update_cache: yes
+    state: present
+  tags: [docker]
+
+- name: Configuration is present
+  copy:
+    src: docker.cfg
+    dest: /etc/default/docker
+  tags: [docker]
+
+- name: Docker is present
+  apt:
+    name: docker.io
+    default_release: jessie-backports
+    state: present
+    force: yes
+  tags: [docker]

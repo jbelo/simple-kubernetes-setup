@@ -1,0 +1,5 @@
+[docker]
+kube-node-03
+
+[kubernetes]
+kube-node-03

@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: Pod
+metadata: 
+  name: kube-controller
+spec: 
+  hostNetwork: true
+  volumes:
+    - name: "etc-kubernetes"
+      hostPath:
+        path: "/etc/kubernetes"
+    - name: "ssl-certs"
+      hostPath:
+        path: "/usr/share/ca-certificates"
+    - name: "var-run-kubernetes"
+      hostPath:
+        path: "/var/run/kubernetes"
+    - name: "etcd-datadir"
+      hostPath:
+        path: "/var/etcd/data"
+    - name: "usr"
+      hostPath:
+        path: "/usr"
+    - name: "lib64"
+      hostPath:
+        path: "/lib64"
+  containers:
+    - name: "etcd"
+      image: "gcr.io/google_containers/etcd:2.0.12"
+      args: 
+        - "--data-dir=/var/etcd/data"
+        - "--advertise-client-urls=http://127.0.0.1:4001"
+        - "--listen-client-urls=http://0.0.0.1:4001"
+        - "--name=etcd"
+      volumeMounts:
+        - mountPath: /var/etcd/data
+          name: "etcd-datadir"
+    - name: "kube-apiserver"
+      image: "gcr.io/google_containers/kube-apiserver:1.0.6"
+      args: 
+        - "--allow-privileged=true"
+        - "--etcd-servers=http://127.0.0.1:4001"
+        - "--insecure-bind-address=0.0.0.0"
+        - "--service-cluster-ip-range=10.3.0.0/16"
+        - "--v=2"
+      volumeMounts:
+        - mountPath: /etc/kubernetes
+          name: "etc-kubernetes"
+        - mountPath: /var/run/kubernetes
+          name: "var-run-kubernetes"
+    - name: "kube-controller-manager"
+      image: "gcr.io/google_containers/kube-controller-manager:1.0.6"
+      args: 
+        - "--master=http://127.0.0.1:8080"
+        - "--v=2"
+    - name: "kube-scheduler"
+      image: "gcr.io/google_containers/kube-scheduler:1.0.6"
+      args:
+        - "--master=http://127.0.0.1:8080"
+        - "--v=2"
+    - name: "kube-proxy"
+      image: "gcr.io/google_containers/kube-proxy:1.0.6"
+      args:
+        - "--master=http://127.0.0.1:8080"
+        - "--v=2"
+      securityContext:
+        privileged: true
+      volumeMounts:
+        - mountPath: /etc/kubernetes
+          name: "etc-kubernetes"
+        - mountPath: /etc/ssl/certs
+          name: "ssl-certs"
+        - mountPath: /usr
+          name: "usr"
+        - mountPath: /lib64
+          name: "lib64"

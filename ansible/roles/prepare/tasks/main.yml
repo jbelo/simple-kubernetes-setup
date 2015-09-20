@@ -1,0 +1,18 @@
+- name: Ensure bridge-utils
+  apt:
+    name: bridge-utils
+    state: present
+- name: Ensure bridge interface
+  blockinfile:
+    dest: /etc/network/interfaces
+    block: |
+      # setup kubernetes bridge
+      auto cbr0
+      iface cbr0 inet static
+            address {{ node_bridge_ip }}
+            netmask 255.255.0.0
+            bridge_ports eth2
+#  notify: start bridge
+
+- name: start bridge
+  command: ifup cbr0

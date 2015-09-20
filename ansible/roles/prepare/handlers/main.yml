@@ -1,0 +1,2 @@
+- name: start bridge
+  command: ifup cbr0

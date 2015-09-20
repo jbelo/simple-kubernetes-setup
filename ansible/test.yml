@@ -1,0 +1,11 @@
+---
+- hosts: 10.100.199.201
+  remote_user: vagrant
+  vars:
+    my_var: "Hello, world!"
+  tasks:
+  - name: echo something templated
+    command: echo {{ my_var }}
+    register: echo_result
+  - debug: out=echo_result.stdout_lines
+

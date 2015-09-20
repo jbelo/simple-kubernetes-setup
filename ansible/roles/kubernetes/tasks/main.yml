@@ -1,0 +1,77 @@
+---
+- name: Ensure service files installed
+  copy:
+    src: services/{{ item.file }}
+    dest: /lib/systemd/system/{{ item.file }}
+    mode: "0644"
+    owner: root
+    group: root
+  with_items:
+    - { file: "kubelet.service" }
+    - { file: "kube-proxy.service" }
+
+- name: Ensure directories exist
+  file:
+    path: "{{ item.path }}"
+    state: directory
+  with_items:
+    - { path: "/opt/bin" }
+    - { path: "/etc/kubernetes/" }
+    - { path: "/etc/kubernetes/manifests" }
+
+- name: Ensure files exist
+  file:
+    path: "{{ item.path }}"
+    state: touch
+  with_items:
+    - { path: "/var/log/etcd.log" }
+
+- name: Ensure binaries installed
+  copy:
+    src: kubernetes/server/bin/{{ item.file }}
+    dest: /opt/bin/{{ item.file }}
+    mode: "0750"
+    owner: root
+    group: root
+  with_items:
+    - { file: "kubelet" }
+    - { file: "kube-proxy" }
+    - { file: "kubectl" }
+
+- name: Ensure images installed
+  copy:
+    src: kubernetes/server/bin/{{ item.file }}
+    dest: /opt/bin/{{ item.file }}
+  with_items:
+    - { file: "kube-apiserver.tar" }
+    - { file: "kube-controller-manager.tar" }
+    - { file: "kube-scheduler.tar" }
+
+- name: Ensure images in registry
+  script: scripts/load_image.sh /opt/bin/{{ item.file }}
+  with_items:
+    - { file: "kube-apiserver.tar" }
+    - { file: "kube-controller-manager.tar" }
+    - { file: "kube-scheduler.tar" }
+
+- name: Ensure manifests installed
+  copy:
+    src: manifests/{{ item.file }}
+    dest: /etc/kubernetes/manifests/{{ item.file }}
+    mode: "0644"
+    owner: root
+    group: root
+  with_items:
+    - { file: "etcd.manifest" }
+    - { file: "apiserver.manifest" }
+    - { file: "kube-controller-manager.manifest" }
+    - { file: "scheduler.manifest" }
+  when: kube-master is defined
+
+- name: Ensure services running
+  service:
+    name: "{{ item.service }}"
+    state: restarted
+  with_items:
+    - { service: kubelet }
+    - { service: kube-proxy }

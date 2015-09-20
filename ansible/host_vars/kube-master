@@ -1,0 +1,6 @@
+ansible_ssh_host: 10.1.1.10
+ansible_ssh_private_key_file: /vagrant/.vagrant/machines/kube-master/virtualbox/private_key
+hostname: kube-master
+node_pod_cidr: 10.2.0.0/24
+node_bridge_ip: 10.2.0.1
+kube_master: true

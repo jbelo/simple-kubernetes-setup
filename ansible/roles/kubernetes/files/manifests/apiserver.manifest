@@ -1,0 +1,67 @@
+{
+  "kind": "Pod",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "kube-apiserver"
+  },
+  "spec": {
+    "hostNetwork": true,
+    "containers": [
+      {
+        "name": "kube-apiserver",
+        "image": "gcr.io/google_containers/kube-apiserver:76d2aa9555c15eb150b058caedc90e17",
+        "command": [
+          "/bin/sh",
+          "-c",
+          "/usr/local/bin/kube-apiserver --admission-control=AlwaysAdmit --etcd-servers=http://127.0.0.1:4001 --insecure-bind-address=0.0.0.0 --service-cluster-ip-range=10.3.0.0/16 --service-node-port-range=30000-32767 --v=2"
+        ],
+        "ports": [
+          {
+            "name": "https",
+            "hostPort": 443,
+            "containerPort": 443
+          },
+          {
+            "name": "local",
+            "hostPort": 8080,
+            "containerPort": 8080
+          }
+        ],
+        "volumeMounts": [
+          {
+            "name": "srvkube",
+            "mountPath": "/srv/kubernetes",
+            "readOnly": true
+          },
+          {
+            "name": "etcssl",
+            "mountPath": "/etc/ssl",
+            "readOnly": true
+          }
+        ],
+        "livenessProbe": {
+          "httpGet": {
+            "path": "/healthz",
+            "port": 8080
+          },
+          "initialDelaySeconds": 15,
+          "timeoutSeconds": 15
+        }
+      }
+    ],
+    "volumes": [
+      {
+        "name": "srvkube",
+        "hostPath": {
+          "path": "/srv/kubernetes"
+        }
+      },
+      {
+        "name": "etcssl",
+        "hostPath": {
+          "path": "/etc/ssl"
+        }
+      }
+    ]
+  }
+}

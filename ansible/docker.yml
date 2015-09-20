@@ -1,0 +1,9 @@
+---
+- hosts: docker
+  serial: 1
+  remote_user: vagrant
+  sudo: yes
+  roles:
+    - blockinfile
+    - prepare
+    - docker
