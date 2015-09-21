@@ -6,7 +6,7 @@
   tags: [docker]
 
 - name: Configuration is present
-  copy:
+  template:
     src: docker.cfg
     dest: /etc/default/docker
   tags: [docker]
