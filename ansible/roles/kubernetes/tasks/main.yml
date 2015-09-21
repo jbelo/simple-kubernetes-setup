@@ -66,7 +66,7 @@
     - { file: "apiserver.manifest" }
     - { file: "kube-controller-manager.manifest" }
     - { file: "scheduler.manifest" }
-  when: kube-master is defined
+  when: kube_master is defined
 
 - name: Ensure services running
   service:

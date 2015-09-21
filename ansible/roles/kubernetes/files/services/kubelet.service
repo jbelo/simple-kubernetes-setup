@@ -6,7 +6,6 @@ Documentation=https://github.com/GoogleCloudPlatform/kubernetes
 ExecStart=/opt/bin/kubelet \
   --api-servers=http://127.0.0.1:8080 \
   --config=/etc/kubernetes/manifests \
-  --pod-cidr=10.3.0.0/16 \
   --v=2
 Restart=on-failure
 RestartSec=5
