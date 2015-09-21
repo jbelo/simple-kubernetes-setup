@@ -1,5 +1,5 @@
 [docker]
-kube-node-03
+kube-master
 
 [kubernetes]
-kube-node-03
+kube-master
