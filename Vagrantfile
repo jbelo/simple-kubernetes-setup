@@ -24,6 +24,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     node.vm.hostname = "kube-master"
     node.vm.network :private_network, ip: "10.1.0.10"
     config.vm.provision :file, source: "requirements.yml", destination: "requirements.yml"
+
+    # Bootstrap master node
     node.vm.provision :shell, privileged: true, inline: <<-SHELL
       apt-get update
       apt-get install --yes python-pip python-dev
@@ -37,6 +39,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.define "kube-node-0#{i}" do |node|
       node.vm.hostname = "kube-node-0#{i}"
       node.vm.network :private_network, ip: "10.1.0.1#{i}"
+
+      # Bootstrap worker node
       node.vm.provision :shell, privileged: true, inline: <<-SHELL
         apt-get update
       SHELL
