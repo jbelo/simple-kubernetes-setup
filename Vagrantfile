@@ -10,7 +10,8 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "debian/jessie64"
-  config.vm.synced_folder ".", "/vagrant", :mount_options => ['dmode=775', 'fmode=775']
+  config.vm.synced_folder ".", "/vagrant"
+  #config.vm.synced_folder ".", "/vagrant", :mount_options => ['dmode=775', 'fmode=775']
   config.vm.provider "virtualbox" do |v|
     v.memory = 1024
     v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
@@ -21,7 +22,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Setup master
   config.vm.define "kube-master" do |node|
     node.vm.hostname = "kube-master"
-    node.vm.network :private_network, ip: "10.1.1.10"
+    node.vm.network :private_network, ip: "10.1.0.10"
     config.vm.provision :file, source: "requirements.yml", destination: "requirements.yml"
     node.vm.provision :shell, privileged: true, inline: <<-SHELL
       apt-get update
@@ -35,7 +36,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   (1..3).each do |i|
     config.vm.define "kube-node-0#{i}" do |node|
       node.vm.hostname = "kube-node-0#{i}"
-      node.vm.network :private_network, ip: "10.1.1.1#{i}"
+      node.vm.network :private_network, ip: "10.1.0.1#{i}"
       node.vm.provision :shell, privileged: true, inline: <<-SHELL
         apt-get update
       SHELL

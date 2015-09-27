@@ -71,7 +71,8 @@
 - name: Ensure services running
   service:
     name: "{{ item.service }}"
-    state: restarted
+    state: started
+    enabled: yes
   with_items:
     - { service: kubelet }
     - { service: kube-proxy }

@@ -1,4 +1,4 @@
-ansible_ssh_host: 10.1.1.13
+ansible_ssh_host: 10.1.0.13
 ansible_ssh_private_key_file: /vagrant/.vagrant/machines/kube-node-03/virtualbox/private_key
 hostname: kube-node-03
 node_pod_cidr: 10.2.3.0/24

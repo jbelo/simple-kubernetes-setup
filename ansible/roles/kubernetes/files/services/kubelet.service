@@ -1,10 +1,12 @@
 [Unit]
 Description=Kubernetes Kubelet
 Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+After=docker.service
+Requires=docker.service
 
 [Service]
 ExecStart=/opt/bin/kubelet \
-  --api-servers=http://127.0.0.1:8080 \
+  --api-servers=http://10.2.0.1:8080 \
   --config=/etc/kubernetes/manifests \
   --v=2
 Restart=on-failure

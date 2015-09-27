@@ -1,5 +1,7 @@
 [docker]
-kube-master
 
 [kubernetes]
 kube-master
+kube-node-01
+kube-node-02
+kube-node-03
